@@ -4,7 +4,7 @@
   "description": "Alexa skill to play podcast",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "zip": "zip -r ./techpod.zip *"
   },
   "author": "alitaso345",
   "license": "ISC",
