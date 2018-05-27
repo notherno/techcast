@@ -1,0 +1,15 @@
+{
+  "name": "techpod",
+  "version": "1.0.0",
+  "description": "Alexa skill to play podcast",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "alitaso345",
+  "license": "ISC",
+  "dependencies": {
+    "ask-sdk-core": "^2.0.5",
+    "ask-sdk-model": "^1.3.0"
+  }
+}
