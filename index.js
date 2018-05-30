@@ -15,19 +15,35 @@ const LaunchHandler = {
 };
 
 const StartPlaybackHandler = {
-  canHandle(handleInput) {
-    const { request } = handleInput.requestEnvelope;
+  canHandle(handlerInput) {
+    const { request } = handlerInput.requestEnvelope;
 
     return request.type === 'IntentRequest' && request.intent.name === 'PlayPodcastIntent';
   },
-  handle(handleInput) {
-    return controller.play(handleInput);
+  handle(handlerInput) {
+    return controller.play(handlerInput);
   }
 };
 
 const controller = {
-  async play(handleInput) {
+  async play(handlerInput) {
     console.log('player controller');
+    const { attributesManager, responseBuilder } = handlerInput;
+
+    responseBuilder.speak('再生します');
+
+    return responseBuilder.getResponse();
+  }
+};
+
+const SessionEndedRequestHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'SessionEndedRequest';
+  },
+  handle(handlerInput) {
+    console.log(`Session ended with reason: ${handlerInput.requestEnvelope.request.reason}`);
+
+    return handlerInput.responseBuilder.getResponse();
   }
 };
 
@@ -50,6 +66,6 @@ const ErrorHandler = {
 
 const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
-  .addRequestHandlers(LaunchHandler, StartPlaybackHandler)
+  .addRequestHandlers(LaunchHandler, SessionEndedRequestHandler, StartPlaybackHandler)
   .addErrorHandlers(ErrorHandler)
   .lambda();
