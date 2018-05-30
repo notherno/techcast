@@ -1,4 +1,5 @@
 const Alexa = require('ask-sdk-core');
+const constants = require('./constants');
 
 const LaunchHandler = {
   canHandle(handlerInput) {
@@ -27,10 +28,16 @@ const StartPlaybackHandler = {
 
 const controller = {
   async play(handlerInput) {
-    console.log('player controller');
     const { attributesManager, responseBuilder } = handlerInput;
+    const playBehavior = 'REPLACE_ALL';
+    const podcast = constants.audioData[0];
+    const token = 0;
+    const offsetInMilliseconds = 0;
 
-    responseBuilder.speak('再生します');
+    responseBuilder
+      .speak('再生します')
+      .withShouldEndSession(true)
+      .addAudioPlayerPlayDirective(playBehavior, podcast.url, token, offsetInMilliseconds, null);
 
     return responseBuilder.getResponse();
   }
