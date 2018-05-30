@@ -1,13 +1,14 @@
 const Alexa = require('ask-sdk-core');
 const constants = require('./constants');
 
+// スキルを起動したときの処理
 const LaunchHandler = {
   canHandle(handlerInput) {
     const { request } = handlerInput.requestEnvelope;
 
     return request.type === 'LaunchRequest';
   },
-  handle(handlerInput) {
+  async handle(handlerInput) {
     return handlerInput.responseBuilder
       .speak('おすすめポッドキャストを再生します')
       .reprompt('おすすめポッドキャストを再生します')
@@ -15,14 +16,20 @@ const LaunchHandler = {
   }
 };
 
-const StartPlaybackHandler = {
+// ユーザーがヘルプを求めたときの処理
+const HelpHandler = {
   canHandle(handlerInput) {
     const { request } = handlerInput.requestEnvelope;
-
-    return request.type === 'IntentRequest' && request.intent.name === 'PlayPodcastIntent';
+    return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.HelpIntent';
   },
-  handle(handlerInput) {
-    return controller.play(handlerInput);
+  async handle(handlerInput) {
+    const message =
+      'TechPodへようこそ。「ポッドキャストを再生して」と言うと、最新のポッドキャストを再生します';
+
+    return handlerInput.responseBuilder
+      .speak(message)
+      .reprompt(message)
+      .getResponse();
   }
 };
 
@@ -43,6 +50,7 @@ const controller = {
   }
 };
 
+// セッションが中断されたときの処理
 const SessionEndedRequestHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'SessionEndedRequest';
@@ -54,6 +62,7 @@ const SessionEndedRequestHandler = {
   }
 };
 
+// どのハンドラーでも扱えなかったときの処理
 const ErrorHandler = {
   canHandle() {
     return true;
@@ -71,8 +80,20 @@ const ErrorHandler = {
   }
 };
 
+// 音声再生に関するリクエストを処理
+const StartPlaybackHandler = {
+  canHandle(handlerInput) {
+    const { request } = handlerInput.requestEnvelope;
+
+    return request.type === 'IntentRequest' && request.intent.name === 'PlayPodcastIntent';
+  },
+  handle(handlerInput) {
+    return controller.play(handlerInput);
+  }
+};
+
 const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
-  .addRequestHandlers(LaunchHandler, SessionEndedRequestHandler, StartPlaybackHandler)
+  .addRequestHandlers(LaunchHandler, HelpHandler, SessionEndedRequestHandler, StartPlaybackHandler)
   .addErrorHandlers(ErrorHandler)
   .lambda();
