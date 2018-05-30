@@ -8,9 +8,26 @@ const LaunchHandler = {
   },
   handle(handlerInput) {
     return handlerInput.responseBuilder
-      .speak('おすすめPodcastを再生します')
-      .reprompt('おすすめPodcastを再生します')
+      .speak('おすすめポッドキャストを再生します')
+      .reprompt('おすすめポッドキャストを再生します')
       .getResponse();
+  }
+};
+
+const StartPlaybackHandler = {
+  canHandle(handleInput) {
+    const { request } = handleInput.requestEnvelope;
+
+    return request.type === 'IntentRequest' && request.intent.name === 'PlayPodcastIntent';
+  },
+  handle(handleInput) {
+    return controller.play(handleInput);
+  }
+};
+
+const controller = {
+  async play(handleInput) {
+    console.log('player controller');
   }
 };
 
@@ -33,6 +50,6 @@ const ErrorHandler = {
 
 const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
-  .addRequestHandlers(LaunchHandler)
+  .addRequestHandlers(LaunchHandler, StartPlaybackHandler)
   .addErrorHandlers(ErrorHandler)
   .lambda();
