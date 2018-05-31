@@ -8,7 +8,7 @@ const LaunchHandler = {
 
     return request.type === 'LaunchRequest';
   },
-  async handle(handlerInput) {
+  handle(handlerInput) {
     return handlerInput.responseBuilder
       .speak('おすすめポッドキャストを再生します')
       .reprompt('おすすめポッドキャストを再生します')
@@ -22,7 +22,7 @@ const HelpHandler = {
     const { request } = handlerInput.requestEnvelope;
     return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.HelpIntent';
   },
-  async handle(handlerInput) {
+  handle(handlerInput) {
     const message =
       'TechPodへようこそ。「ポッドキャストを再生して」と言うと、最新のポッドキャストを再生します';
 
@@ -34,7 +34,7 @@ const HelpHandler = {
 };
 
 const controller = {
-  async play(handlerInput) {
+  play(handlerInput) {
     const { attributesManager, responseBuilder } = handlerInput;
     const playBehavior = 'REPLACE_ALL';
     const podcast = constants.audioData[0];
@@ -47,6 +47,9 @@ const controller = {
       .addAudioPlayerPlayDirective(playBehavior, podcast.url, token, offsetInMilliseconds, null);
 
     return responseBuilder.getResponse();
+  },
+  stop(handlerInput) {
+    return handlerInput.responseBuilder.addAUdioPlayerStopDirective().getResponse();
   }
 };
 
@@ -92,8 +95,30 @@ const StartPlaybackHandler = {
   }
 };
 
+const PausePlaybackHandler = {
+  canHandle(handlerInput) {
+    const { request } = handlerInput.requestEnvelope;
+
+    return (
+      request.type === 'IntentRequest' &&
+      (request.intent.name === 'AMAZON.StopIntent' ||
+        request.intent.name === 'AMAZON.CancelIntent' ||
+        request.intent.name === 'AMAZON.PauseIntent')
+    );
+  },
+  handle(handlerInput) {
+    return controller.stop(handlerInput);
+  }
+};
+
 const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
-  .addRequestHandlers(LaunchHandler, HelpHandler, SessionEndedRequestHandler, StartPlaybackHandler)
+  .addRequestHandlers(
+    LaunchHandler,
+    HelpHandler,
+    SessionEndedRequestHandler,
+    StartPlaybackHandler,
+    PausePlaybackHandler
+  )
   .addErrorHandlers(ErrorHandler)
   .lambda();
