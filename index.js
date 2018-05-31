@@ -49,7 +49,7 @@ const controller = {
     return responseBuilder.getResponse();
   },
   stop(handlerInput) {
-    return handlerInput.responseBuilder.addAUdioPlayerStopDirective().getResponse();
+    return handlerInput.responseBuilder.addAudioPlayerStopDirective().getResponse();
   }
 };
 
