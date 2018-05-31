@@ -49,7 +49,11 @@ const controller = {
     return responseBuilder.getResponse();
   },
   stop(handlerInput) {
-    return handlerInput.responseBuilder.addAudioPlayerStopDirective().getResponse();
+    return handlerInput.responseBuilder
+      .speak('ポッドキャストの再生を停止します')
+      .withShouldEndSession(true)
+      .addAudioPlayerStopDirective()
+      .getResponse();
   }
 };
 
