@@ -10,6 +10,6 @@ exports.audioData = [
   },
   {
     title: 'yatteiki.fm',
-    url: 'https://yatteiki.fm/audio/47.mp'
+    url: 'https://yatteiki.fm/audio/47.mp3'
   }
 ];
