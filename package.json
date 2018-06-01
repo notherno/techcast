@@ -4,7 +4,7 @@
   "description": "Alexa skill to play podcast",
   "main": "index.js",
   "scripts": {
-    "zip": "zip -r ./techpod.zip *"
+    "zip": "zip -r ./techcast.zip *"
   },
   "author": "alitaso345",
   "license": "ISC",
