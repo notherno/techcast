@@ -9,7 +9,13 @@ const LaunchHandler = {
     return request.type === 'LaunchRequest';
   },
   handle(handlerInput) {
-    return controller.play(handlerInput);
+    const message =
+      'テックキャストは技術系ポッドキャストを再生できるスキルです。ポッドキャストを再生しますか？';
+
+    return handlerInput.responseBuilder
+      .speak(message)
+      .reprompt(message)
+      .getResponse();
   }
 };
 
@@ -30,12 +36,24 @@ const HelpHandler = {
   }
 };
 
+const PlayPodcastIntent = {
+  canHandle(handlerInput) {
+    const { request } = handlerInput.requestEnvelope;
+
+    return request.type === 'IntentRequest' && request.intent.name === 'PlayPodcastIntent';
+  },
+  handle(handlerInput) {
+    return controller.randomPlay(handlerInput);
+  }
+};
+
 const controller = {
-  play(handlerInput) {
+  randomPlay(handlerInput) {
     const { responseBuilder } = handlerInput;
-    const message = '最新のポッドキャストを再生します';
     const playBehavior = 'REPLACE_ALL';
-    const podcast = constants.audioData[0];
+    const index = Math.floor(Math.random() * constants.audioData.length);
+    const podcast = constants.audioData[index];
+    const message = `${podcast.title}を適当に再生します`;
     const token = 0;
     const offsetInMilliseconds = 0;
 
@@ -99,6 +117,12 @@ const PausePlaybackHandler = {
 
 const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
-  .addRequestHandlers(LaunchHandler, HelpHandler, SessionEndedRequestHandler, PausePlaybackHandler)
+  .addRequestHandlers(
+    LaunchHandler,
+    HelpHandler,
+    PlayPodcastIntent,
+    SessionEndedRequestHandler,
+    PausePlaybackHandler
+  )
   .addErrorHandlers(ErrorHandler)
   .lambda();
