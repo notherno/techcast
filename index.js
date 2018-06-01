@@ -9,10 +9,7 @@ const LaunchHandler = {
     return request.type === 'LaunchRequest';
   },
   handle(handlerInput) {
-    return handlerInput.responseBuilder
-      .speak('おすすめポッドキャストを再生します')
-      .reprompt('おすすめポッドキャストを再生します')
-      .getResponse();
+    return controller.play(handlerInput);
   }
 };
 
@@ -24,7 +21,7 @@ const HelpHandler = {
   },
   handle(handlerInput) {
     const message =
-      'TechPodへようこそ。「ポッドキャストを再生して」と言うと、最新のポッドキャストを再生します';
+      'TechPodへようこそ。「テックキャストを開いて」と言うと最新のポッドキャストを再生できます';
 
     return handlerInput.responseBuilder
       .speak(message)
@@ -35,25 +32,22 @@ const HelpHandler = {
 
 const controller = {
   play(handlerInput) {
-    const { attributesManager, responseBuilder } = handlerInput;
+    const { responseBuilder } = handlerInput;
+    const message = '最新のポッドキャストを再生します';
     const playBehavior = 'REPLACE_ALL';
     const podcast = constants.audioData[0];
     const token = 0;
     const offsetInMilliseconds = 0;
 
     responseBuilder
-      .speak('再生します')
+      .speak(message)
       .withShouldEndSession(true)
       .addAudioPlayerPlayDirective(playBehavior, podcast.url, token, offsetInMilliseconds, null);
 
     return responseBuilder.getResponse();
   },
   stop(handlerInput) {
-    return handlerInput.responseBuilder
-      .speak('ポッドキャストの再生を停止します')
-      .withShouldEndSession(true)
-      .addAudioPlayerStopDirective()
-      .getResponse();
+    return handlerInput.responseBuilder.addAudioPlayerStopDirective().getResponse();
   }
 };
 
@@ -87,18 +81,6 @@ const ErrorHandler = {
   }
 };
 
-// 音声再生に関するリクエストを処理
-const StartPlaybackHandler = {
-  canHandle(handlerInput) {
-    const { request } = handlerInput.requestEnvelope;
-
-    return request.type === 'IntentRequest' && request.intent.name === 'PlayPodcastIntent';
-  },
-  handle(handlerInput) {
-    return controller.play(handlerInput);
-  }
-};
-
 const PausePlaybackHandler = {
   canHandle(handlerInput) {
     const { request } = handlerInput.requestEnvelope;
@@ -117,12 +99,6 @@ const PausePlaybackHandler = {
 
 const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
-  .addRequestHandlers(
-    LaunchHandler,
-    HelpHandler,
-    SessionEndedRequestHandler,
-    StartPlaybackHandler,
-    PausePlaybackHandler
-  )
+  .addRequestHandlers(LaunchHandler, HelpHandler, SessionEndedRequestHandler, PausePlaybackHandler)
   .addErrorHandlers(ErrorHandler)
   .lambda();
