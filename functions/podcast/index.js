@@ -53,15 +53,16 @@ const controller = {
     const { responseBuilder } = handlerInput;
     const playBehavior = 'REPLACE_ALL';
     const index = Math.floor(Math.random() * constants.audioData.length);
-    const podcast = await getEpisode();
-    const message = `${podcast.title}を再生します`;
+    const podcast = constants.audioData[index];
+    const episode = await getEpisode(podcast.feed);
+    const message = `${podcast.title}の${episode.title}を再生します`;
     const token = 0;
     const offsetInMilliseconds = 0;
 
     responseBuilder
       .speak(message)
       .withShouldEndSession(true)
-      .addAudioPlayerPlayDirective(playBehavior, podcast.url, token, offsetInMilliseconds, null);
+      .addAudioPlayerPlayDirective(playBehavior, episode.url, token, offsetInMilliseconds, null);
 
     return responseBuilder.getResponse();
   },
@@ -117,7 +118,7 @@ const PausePlaybackHandler = {
 };
 
 const skillBuilder = Alexa.SkillBuilders.custom();
-exports.handler = skillBuilder
+exports.handle = skillBuilder
   .addRequestHandlers(
     LaunchHandler,
     HelpHandler,

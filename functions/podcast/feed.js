@@ -14,8 +14,8 @@ function parseXml(xml) {
   });
 }
 
-async function getEpisode() {
-  const response = await fetch(constants.audioData[0].feed);
+async function getEpisode(feedUrl) {
+  const response = await fetch(feedUrl);
   const body = await response.text();
   const result = await parseXml(body);
   const item = result.rss.channel[0].item[0]; //最新話のデータ
