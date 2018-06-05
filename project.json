@@ -1,0 +1,8 @@
+{
+  "name": "techcast",
+  "description": "",
+  "memory": 128,
+  "timeout": 5,
+  "role": "arn:aws:iam::952846470417:role/techcast_lambda_function",
+  "environment": {}
+}
