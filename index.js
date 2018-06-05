@@ -53,7 +53,7 @@ const controller = {
     const playBehavior = 'REPLACE_ALL';
     const index = Math.floor(Math.random() * constants.audioData.length);
     const podcast = constants.audioData[index];
-    const message = `${podcast.title}を適当に再生します`;
+    const message = `${podcast.title}を再生します`;
     const token = 0;
     const offsetInMilliseconds = 0;
 

@@ -1,5 +1,5 @@
 {
-  "name": "techpod",
+  "name": "techcast",
   "version": "1.0.0",
   "description": "Alexa skill to play podcast",
   "main": "index.js",
